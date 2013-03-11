@@ -4,7 +4,7 @@
       "Nicolas Steenlant <nicolas.steenlant@ugent.be>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.38, CPAN::Meta::Converter version 2.120921",
+   "generated_by" : "Module::Build version 0.4003, CPAN::Meta::Converter version 2.120921",
    "license" : [
       "perl_5"
    ],
@@ -23,14 +23,14 @@
       },
       "configure" : {
          "requires" : {
-            "Module::Build" : "0.38"
+            "Module::Build" : "0.40"
          }
       },
       "runtime" : {
          "requires" : {
             "Catmandu" : "0.01",
+            "HTTP::OAI" : "3.28",
             "Moo" : "0.009011",
-            "Net::OAI::Harvester" : "1.13",
             "perl" : "v5.10.0"
          }
       }
@@ -40,9 +40,13 @@
          "file" : "lib/Catmandu/Importer/OAI.pm",
          "version" : 0
       },
+      "Catmandu::Importer::OAI::DC" : {
+         "file" : "lib/Catmandu/Importer/OAI.pm",
+         "version" : 0
+      },
       "Catmandu::OAI" : {
          "file" : "lib/Catmandu/OAI.pm",
-         "version" : "0.01"
+         "version" : "0.02"
       }
    },
    "release_status" : "stable",
@@ -51,5 +55,5 @@
          "http://dev.perl.org/licenses/"
       ]
    },
-   "version" : "0.01"
+   "version" : "0.02"
 }

@@ -6,11 +6,11 @@ Catmandu::OAI - Catmandu modules for working with OAI repositories
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 MODULES
 
@@ -23,6 +23,10 @@ our $VERSION = '0.01';
 =head1 AUTHOR
 
 Nicolas Steenlant, C<< <nicolas.steenlant at ugent.be> >>
+
+=head1 CONTRIBUTOR
+
+Patrick Hochstenbach C<< <patrick.hochstenbach at ugent.be> >>
 
 =head1 LICENSE AND COPYRIGHT
 

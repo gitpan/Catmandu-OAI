@@ -7,9 +7,9 @@ build_requires:
   Test::Exception: 0
   Test::More: 0
 configure_requires:
-  Module::Build: 0.38
+  Module::Build: 0.40
 dynamic_config: 1
-generated_by: 'Module::Build version 0.38, CPAN::Meta::Converter version 2.120921'
+generated_by: 'Module::Build version 0.4003, CPAN::Meta::Converter version 2.120921'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -19,14 +19,17 @@ provides:
   Catmandu::Importer::OAI:
     file: lib/Catmandu/Importer/OAI.pm
     version: 0
+  Catmandu::Importer::OAI::DC:
+    file: lib/Catmandu/Importer/OAI.pm
+    version: 0
   Catmandu::OAI:
     file: lib/Catmandu/OAI.pm
-    version: 0.01
+    version: 0.02
 requires:
   Catmandu: 0.01
+  HTTP::OAI: 3.28
   Moo: 0.009011
-  Net::OAI::Harvester: 1.13
   perl: v5.10.0
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.01
+version: 0.02
