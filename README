@@ -1,18 +1,39 @@
-Catmandu-OAI
+NAME
+    Catmandu::OAI - Catmandu modules for working with OAI repositories
 
-INSTALLATION
+SYNOPSIS
+      # From the command line
+      $ catmandu convert OAI --url http://biblio.ugent.be/oai --set allFtxt
+      $ catmandu import OAI --url http://biblio.ugent.be/oai --set allFtxt to MongoDB --database-name biblio
 
-To install this module, run the following commands:
+      # From Perl
+      use Catmandu;
 
-  perl Build.PL
-	./Build
-	./Build test
-	./Build install
+      my $importer = Catmandu->importer('OAI',url => 'http://biblio.ugent.be/oai' , set => 'allFtxt');
 
-SUPPORT AND DOCUMENTATION
+      $importer->each(sub {
+            my $item = shift;
 
-After installing, you can find documentation for this module with the
-perldoc command.
+            print "%s %s\n", $item->{_identifier} , $item->{title}->[0];
+      });
 
-  perldoc Catmandu::OAI
+MODULES
+    *   Catmandu::Importer::OAI
+
+AUTHOR
+    Nicolas Steenlant, "<nicolas.steenlant at ugent.be>"
+
+CONTRIBUTOR
+    Patrick Hochstenbach, "<patrick.hochstenbach at ugent.be>"
+
+    Jakob Voss, "<nichtich at cpan.org>"
+
+LICENSE AND COPYRIGHT
+    Copyright 2012 Ghent University Library
+
+    This program is free software; you can redistribute it and/or modify it
+    under the terms of either: the GNU General Public License as published
+    by the Free Software Foundation; or the Artistic License.
+
+    See http://dev.perl.org/licenses/ for more information.
 

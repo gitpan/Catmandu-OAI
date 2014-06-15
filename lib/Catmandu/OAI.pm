@@ -4,13 +4,26 @@ package Catmandu::OAI;
 
 Catmandu::OAI - Catmandu modules for working with OAI repositories
 
-=head1 VERSION
+=head1 SYNOPSIS
 
-Version 0.02
+  # From the command line
+  $ catmandu convert OAI --url http://biblio.ugent.be/oai --set allFtxt
+  $ catmandu import OAI --url http://biblio.ugent.be/oai --set allFtxt to MongoDB --database-name biblio
+
+  # From Perl
+  use Catmandu;
+
+  my $importer = Catmandu->importer('OAI',url => 'http://biblio.ugent.be/oai' , set => 'allFtxt');
+
+  $importer->each(sub {
+	my $item = shift;
+
+	print "%s %s\n", $item->{_identifier} , $item->{title}->[0];
+  });
 
 =cut
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 =head1 MODULES
 
@@ -26,7 +39,9 @@ Nicolas Steenlant, C<< <nicolas.steenlant at ugent.be> >>
 
 =head1 CONTRIBUTOR
 
-Patrick Hochstenbach C<< <patrick.hochstenbach at ugent.be> >>
+Patrick Hochstenbach, C<< <patrick.hochstenbach at ugent.be> >>
+
+Jakob Voss, C<< <nichtich at cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 
