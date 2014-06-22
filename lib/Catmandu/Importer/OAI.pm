@@ -1,8 +1,9 @@
 package Catmandu::Importer::OAI;
 
 use Catmandu::Sane;
-use Catmandu::Importer::OAI::DC;
+use Catmandu::Util qw(:is);
 use Moo;
+use Scalar::Util qw(blessed);
 use HTTP::OAI;
 use Data::Dumper;
 
@@ -10,13 +11,45 @@ with 'Catmandu::Importer';
 
 has url     => (is => 'ro', required => 1);
 has metadataPrefix => (is => 'ro' , default => sub { "oai_dc" });
-has handler => (is => 'ro', default => sub { Catmandu::Importer::OAI::DC->new });
+has handler => (is => 'rw', lazy => 1 , builder => 1, coerce => \&_coerce_handler );
 has set     => (is => 'ro');
 has from    => (is => 'ro');
 has until   => (is => 'ro');
-has oai     => (is => 'ro', lazy => 1, builder => '_build_oai');
+has oai     => (is => 'ro', lazy => 1, builder => 1);
 has dry     => (is => 'ro');
 has listIdentifiers => (is => 'ro');
+
+sub _build_handler {
+    my ($self) = @_;
+    if ($self->metadataPrefix eq 'oai_dc') {
+        return 'DC';
+    } else {
+        return 'Struct';
+    }
+}
+
+sub _coerce_handler {
+  my ($handler) = @_;
+
+  return $handler if is_invocant($handler) or is_code_ref($handler);
+
+  if (is_string($handler) && !is_number($handler)) {
+      my $class = $handler =~ /^\+(.+)/ ? $1
+        : "Catmandu::Importer::OAI::$handler";
+
+      my $handler;
+      eval {
+          $handler = Catmandu::Util::require_package($class)->new;
+      };
+      if ($@) {
+        croak $@;
+      } else {
+        return $handler;
+      }
+  }
+
+  return sub { return { _metadata => readXML($_[0]) } };
+}
 
 sub _build_oai {
     my ($self) = @_;
@@ -31,7 +64,6 @@ sub _map_record {
     my $datestamp  = $rec->datestamp;
     my $status     = $rec->status // "";
     my $dom        = $rec->metadata ? $rec->metadata->dom->nonBlankChildNodes->[0]->nonBlankChildNodes->[0] : undef;
-    my $metadata   = $dom ? $dom->toString : "";
     my $about      = [];
 
     for ($rec->about) {
@@ -40,8 +72,9 @@ sub _map_record {
 
     my $values  = {};
 
-    if (defined $self->handler && $self->metadataPrefix eq $self->handler->metadataPrefix) {
-        $values  = $self->handler->parse($dom) // {};
+    if ($dom) {
+        $values = (blessed($self->handler)
+                ? $self->handler->parse($dom) : $self->handler->($dom)) // { };
     }
 
     my $data = {
@@ -49,7 +82,6 @@ sub _map_record {
         _identifier => $identifier ,
         _datestamp  => $datestamp ,
         _status     => $status ,
-        _metadata   => $metadata ,
         _setSpec    => $sets ,
         _about      => $about ,
         %$values
@@ -157,6 +189,12 @@ Catmandu::Importer::OAI - Package that imports OAI-PMH feeds
 
 =head1 SYNOPSIS
 
+    # From the command line
+    $ catmandu convert OAI --url http://myrepo.org/oai
+
+    $ catmandu convert OAI --url http://myrepo.org/oai --metadataPrefix didl --handler RAW
+
+    # In perl
     use Catmandu::Importer::OAI;
 
     my $importer = Catmandu::Importer::OAI->new(
@@ -174,13 +212,29 @@ Catmandu::Importer::OAI - Package that imports OAI-PMH feeds
 
 =head1 CONFIGURATION
 
-=over
+=over 4
 
 =item url
 
 =item metadataPrefix
 
-=item handler
+=item handler(sub {})
+
+=item handler(My::Handler->new)
+
+=item handler('NAME' | '+NAME')
+
+To parse metadata records optionally a handler can be
+provided which transforms a DOM object into a Perl hash.
+
+Handlers can be provided as function reference, an instance of a Perl 
+package that implements 'parse', or by a package NAME. Package names should
+be prepended by C<+> or prefixed with C<Catmandu::Importer::OAI::>. E.g
+C<foobar> will create a C<Catmandu::Importer::OAI::foobar> instance.
+
+Be default, L<Catmandu::Importer::OAI::DC> is used for C<oai_dc> type of
+responses. For all other responses, L<XML::Struct> is used to transform the 
+XML fragment into record field C<_metadata>.
 
 =item set
 
@@ -203,26 +257,6 @@ Don't do any HTTP requests but return URLs that data would be queried from.
 Every Catmandu::Importer is a L<Catmandu::Iterable> all its methods are
 inherited. The Catmandu::Importer::OAI methods are not idempotent: OAI-PMH
 feeds can only be read once.
-
-To parse metadata records into Perl hashes optionally
-a handler can be provided. This is a Perl package that implements two methods:
-
-  * metadataPrefix  - which should return a metadataPrefix string for which it can parse
-  the metadata
-  * parse($dom) - which recieves a XML::LibXML::DOM object and should return a Perl hash
-
-E.g.
-
-  package MyHandler;
-
-  use Moo;
-
-  has metadataPrefix => (is => 'ro' , default => sub { "oai_dc" });
-
-  sub parse {
-      my ($self,$dom) = @_;
-      return {};
-  }
 
 =cut
 

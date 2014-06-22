@@ -1,5 +1,10 @@
 Revision history for Catmandu-OAI
 
+0.05  2014-06-22 09:34:00 CEST
+  - Adding support for default XML::Struct parsing
+  - Adding support for passing handlers by name and by invocation
+  - Refactoring the RAW XML response into the Catmandu::Importer::OAI::RAW parser
+
 0.04  2014-06-15 20:30:07 CEST
   - switched to the new HTTP::OAI with callbacks
   - adding a network test
