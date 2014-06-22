@@ -9,9 +9,10 @@ README
 cpanfile
 dist.ini
 lib/Catmandu/Importer/OAI.pm
-lib/Catmandu/Importer/OAI/DC.pm
-lib/Catmandu/Importer/OAI/RAW.pm
-lib/Catmandu/Importer/OAI/Struct.pm
+lib/Catmandu/Importer/OAI/Parser/marcxml.pm
+lib/Catmandu/Importer/OAI/Parser/oai_dc.pm
+lib/Catmandu/Importer/OAI/Parser/raw.pm
+lib/Catmandu/Importer/OAI/Parser/struct.pm
 lib/Catmandu/OAI.pm
 t/00-load.t
 t/01-importer.t

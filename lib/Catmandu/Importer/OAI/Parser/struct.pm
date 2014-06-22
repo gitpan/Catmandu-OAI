@@ -1,4 +1,4 @@
-package Catmandu::Importer::OAI::Struct;
+package Catmandu::Importer::OAI::Parser::struct;
 
 use Catmandu::Sane;
 use Moo;
@@ -9,7 +9,7 @@ sub parse {
 
     return undef unless defined $dom;
 
-	{ _metadata => readXML($dom) };
+    { _metadata => readXML($dom) };
 }
 
 1;

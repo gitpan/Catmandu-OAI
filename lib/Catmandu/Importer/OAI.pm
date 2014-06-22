@@ -6,6 +6,7 @@ use Moo;
 use Scalar::Util qw(blessed);
 use HTTP::OAI;
 use Data::Dumper;
+use Carp;
 
 with 'Catmandu::Importer';
 
@@ -22,9 +23,13 @@ has listIdentifiers => (is => 'ro');
 sub _build_handler {
     my ($self) = @_;
     if ($self->metadataPrefix eq 'oai_dc') {
-        return 'DC';
-    } else {
-        return 'Struct';
+        return 'oai_dc';
+    } 
+    elsif ($self->metadataPrefix eq 'marcxml') {
+        return 'marcxml';
+    }
+    else {
+        return 'struct';
     }
 }
 
@@ -35,7 +40,7 @@ sub _coerce_handler {
 
   if (is_string($handler) && !is_number($handler)) {
       my $class = $handler =~ /^\+(.+)/ ? $1
-        : "Catmandu::Importer::OAI::$handler";
+        : "Catmandu::Importer::OAI::Parser::$handler";
 
       my $handler;
       eval {
@@ -229,12 +234,16 @@ provided which transforms a DOM object into a Perl hash.
 
 Handlers can be provided as function reference, an instance of a Perl 
 package that implements 'parse', or by a package NAME. Package names should
-be prepended by C<+> or prefixed with C<Catmandu::Importer::OAI::>. E.g
-C<foobar> will create a C<Catmandu::Importer::OAI::foobar> instance.
+be prepended by C<+> or prefixed with C<Catmandu::Importer::OAI::Parser>. E.g
+C<foobar> will create a C<Catmandu::Importer::OAI::Parser::foobar> instance.
 
-Be default, L<Catmandu::Importer::OAI::DC> is used for C<oai_dc> type of
-responses. For all other responses, L<XML::Struct> is used to transform the 
-XML fragment into record field C<_metadata>.
+Supported handles:
+    oai_dc  : Catmandu::Importer::OAI::Parser::oai_dc
+    marcxml : Catmandu::Importer::OAI::Parser::marcxml
+    raw     : Catmandu::Importer::OAI::Parser::raw (dont parse return the xml as is)
+
+By all other responses, L<XML::Struct> is used to transform the  XML fragment into record 
+field C<_metadata>.
 
 =item set
 

@@ -34,7 +34,7 @@ resources:
   bugtracker: https://github.com/LibreCat/Catmandu-OAI/issues
   homepage: https://github.com/LibreCat/Catmandu-OAI
   repository: https://github.com/LibreCat/Catmandu-OAI.git
-version: '0.05'
+version: '0.06'
 x_contributors:
   - 'Jakob Voss <voss@gbv.de>'
   - 'Nicolas Steenlant <nicolas.steenlant@ugent.be>'
